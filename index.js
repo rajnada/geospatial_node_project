@@ -8,6 +8,7 @@ const app = express();
 
 // middleware for bodyparser
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // get settings
 const settings = require("./config/settings");
