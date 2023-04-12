@@ -26,18 +26,22 @@ router.get("/get", async (req, res) => {
       // .skip(page)
       // .limit(perPage)
       .then((ship) => {
-        console.log("ship =>", ship);
+        // console.log("ship =>", ship);
         res.send(ship);
       });
   } catch (error) {
     res.status(500).send(error);
   }
+});
 
-  // with cursor
-  // const cursor = await Person.find()
-  // cursor.forEach(function(myDoc) {
-  //     console.log( myDoc );
-  // })
+//@type     -   GET
+//@route    -   /api/ship/get/:id
+//@desc     -   Get a particular record
+//@access   -   PUBLIC
+router.get("/get/:id", (req, res) => {
+  Ship.findOne({ _id: req.params._id })
+    .then((ship) => res.send(ship))
+    .catch((err) => console.log(err));
 });
 
 // create a new document. URL : /api/ship/add
