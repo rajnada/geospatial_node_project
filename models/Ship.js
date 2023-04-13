@@ -17,11 +17,11 @@ const ShipSchema = new Schema({
     type: String,
     require: true,
   },
-  latdec: {
+  londec: {
     type: Number,
     require: true,
   },
-  londec: {
+  latdec: {
     type: Number,
     require: true,
   },

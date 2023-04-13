@@ -38,7 +38,7 @@ router.get("/get", async (req, res) => {
 //@route    -   /api/ship/get/:id
 //@desc     -   Get a particular record
 //@access   -   PUBLIC
-router.get("/get/:id", (req, res) => {
+router.get("/get/:_id", (req, res) => {
   Ship.findOne({ _id: req.params._id })
     .then((ship) => res.send(ship))
     .catch((err) => console.log(err));
@@ -54,8 +54,8 @@ router.post("/add", (req, res) => {
     vesslterms: req.body.vesslterms,
     feature_type: req.body.feature_type,
     chart: req.body.chart,
-    latdec: req.body.latdec,
     londec: req.body.londec,
+    latdec: req.body.latdec,
     gp_quality: req.body.gp_quality,
     depth: req.body.depth,
     watlev: req.body.watlev,
