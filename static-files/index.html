@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h2 {
+            display: flex;
+            width: 20%;
+            margin: 0 auto;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .form-group:last-child {
+            margin-right: 0;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <h2>Shipwreck Form</h2>
+    <form action="/api/ship/record" method="post">
+        <label for="page">Page:</label>
+        <input type="number" id="page" name="page" required>
+
+        <label for="perpage">Per Page:</label>
+        <input type="number" id="perpage" name="perpage" required>
+
+        <label for="depth">Depth:</label>
+        <input type="number" id="depth" name="depth" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+
+</html>

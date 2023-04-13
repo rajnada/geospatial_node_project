@@ -4,6 +4,7 @@ const router = express.Router();
 // Import Ship schema
 const Ship = require("./../../models/Ship");
 const { log } = require("console");
+const { exec } = require("child_process");
 
 //@type     -   GET
 //@route    -   /api/ship
@@ -16,9 +17,6 @@ router.get("/", (req, res) => res.send("Ship related routes"));
 //@desc     -   Get all people record
 //@access   -   PUBLIC
 router.get("/get", async (req, res) => {
-  let page = req.query.page;
-  let perPage = req.query.perPage;
-  let depth = req.query.depth;
   // without cursor.
   try {
     await Ship.find({})
@@ -34,6 +32,26 @@ router.get("/get", async (req, res) => {
   }
 });
 
+app.post("/record", async (req, res) => {
+  const page = req.body.page;
+  const perpage = req.body.perpage;
+  const depth = req.body.depth;
+  const query = depth ? { depth } : {};
+
+  try {
+    const sales = await Ship.find(query)
+      // .sort({ saleDate: -1 })
+      .skip((page - 1) * per_page)
+      .limit(per_page)
+      .lean()
+      .exec();
+
+    res.render("sales", { title: "Filtered Data", data: sales });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
 //@type     -   GET
 //@route    -   /api/ship/get/:id
 //@desc     -   Get a particular record
@@ -41,12 +59,14 @@ router.get("/get", async (req, res) => {
 router.get("/get/:_id", (req, res) => {
   Ship.findOne({ _id: req.params._id })
     .then((ship) => res.send(ship))
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      res.status(403).send("Record doesn't exist!");
+      console.log(err);
+    });
 });
 
 // create a new document. URL : /api/ship/add
 router.post("/add", (req, res) => {
-  console.log("req =>", req.body);
   res.setHeader("Content-Type", "application/json");
 
   const shipData = Ship({
@@ -75,14 +95,66 @@ router.post("/add", (req, res) => {
   shipData
     .save()
     .then((shipData) => {
-      console.log("shipData =>", shipData);
-      res.json(shipData);
+      res.send(shipData);
       // res.send("Successfully ! Added");
     })
-    .catch((err) => res.send(err.message));
+    .catch((err) => {
+      res.status(500).send(err.message);
+      res.send(err.message);
+    });
 });
 // })
 // .catch((err) => res.send(err));
 // });
+
+//@type     -   PUT
+//@route    -   /api/ship/put/:id
+//@desc     -   update a particular record
+//@access   -   PUBLIC
+router.put("/put/:_id", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+
+  const shipData = {
+    recrd: req.body.recrd,
+    vesslterms: req.body.vesslterms,
+    feature_type: req.body.feature_type,
+    chart: req.body.chart,
+    londec: req.body.londec,
+    latdec: req.body.latdec,
+    gp_quality: req.body.gp_quality,
+    depth: req.body.depth,
+    watlev: req.body.watlev,
+    quasou: req.body.quasou,
+    history: req.body.history,
+    sounding_type: req.body.sounding_type,
+    coordinates: req.body.coordinates,
+  };
+
+  Ship.updateOne({ _id: req.params._id }, { $set: shipData })
+    .exec()
+    .then(() => {
+      res.status(201).send("Successfully ! Record Updated");
+    })
+    .catch((err) => {
+      res.status(403).send("Record doesn't exist!");
+      console.log(err);
+    });
+});
+
+//@type     -   DELETE
+//@route    -   /api/ship/put/:id
+//@desc     -   Delete a record on the basis of id
+//@access   -   PUBLIC
+router.delete("/delete/:_id", (req, res) => {
+  Ship.deleteOne({ _id: req.params._id })
+    .exec()
+    .then(() => {
+      res.status(201).send("Successfully ! Record Deleted.");
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(403).send("Record doesn't exist!");
+    });
+});
 
 module.exports = router;
