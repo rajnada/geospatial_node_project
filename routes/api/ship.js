@@ -1,5 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+var cookie = require("cookie-parser");
+const jsonwt = require("jsonwebtoken");
+const passport = require("passport");
+require("../../strategies/jsonWtStrategy")(passport);
+const settings = require("../../config/settings");
 
 // Import Ship schema
 const Ship = require("./../../models/Ship");
@@ -62,14 +68,18 @@ router.post("/record", async (req, res) => {
 //@route    -   /api/ship/get/:id
 //@desc     -   Get a particular record
 //@access   -   PUBLIC
-router.get("/get/:_id", (req, res) => {
-  Ship.findOne({ _id: req.params._id })
-    .then((ship) => res.send(ship))
-    .catch((err) => {
-      res.status(403).send("Record doesn't exist!");
-      console.log(err);
-    });
-});
+router.get(
+  "/get/:_id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Ship.findOne({ _id: req.params._id })
+      .then((ship) => res.send(ship))
+      .catch((err) => {
+        res.status(403).send("Record doesn't exist!");
+        console.log(err);
+      });
+  }
+);
 
 // create a new document. URL : /api/ship/add
 router.post("/add", (req, res) => {
@@ -161,6 +171,68 @@ router.delete("/delete/:_id", (req, res) => {
       console.log(err);
       res.status(403).send("Record doesn't exist!");
     });
+});
+
+// Create temp database
+const temp_db = {
+  user: [
+    {
+      id: 1,
+      name: "Raj",
+      username: "raj",
+      password: "$2a$10$kYQvNEOWJmh6ERvIdCkfw.i.V/B/pUPn.al6crDwL4zWAUhu6wCna", // 123456
+    },
+  ],
+};
+
+// Route to login a user. URL : /api/auth/login
+router.post("/login", (req, res) => {
+  username = req.body.username;
+  password = req.body.password; // 123456
+
+  const user = temp_db.user.find((user) => user.username === username);
+
+  console.log(user);
+
+  // check if username is already in collection.
+  if (user) {
+    // compare the password
+    bcrypt
+      .compare(password, user.password)
+      .then((isCompared) => {
+        if (isCompared) {
+          // res.cookie('session_id', '123')
+          // res.send('Login Success')
+
+          // generate JWT
+          const payload = {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+          };
+
+          console.log(payload);
+          // jsonwebtoken method used to create token.
+          jsonwt.sign(
+            payload,
+            settings.secret,
+            { expiresIn: 3600 },
+            (err, token) => {
+              console.log("Error : " + err);
+              res.json({
+                success: true,
+                token: "Bearer " + token,
+              });
+            }
+          );
+        } else {
+          res.status(401).send("Password is not correct");
+        }
+      })
+      .catch();
+  } else {
+    res.status(400).send("Username is not there.");
+  }
 });
 
 module.exports = router;
