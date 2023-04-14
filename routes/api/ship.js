@@ -71,8 +71,8 @@ router.post("/record", async (req, res) => {
 router.get(
   "/get/:_id",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    Ship.findOne({ _id: req.params._id })
+  async (req, res) => {
+    await Ship.findOne({ _id: req.params._id })
       .then((ship) => res.send(ship))
       .catch((err) => {
         res.status(403).send("Record doesn't exist!");
