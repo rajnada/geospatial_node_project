@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
 var path = require("path");
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 const app = express();
 
@@ -15,6 +15,9 @@ app.engine(
     extname: ".hbs",
   })
 );
+
+// here we are setting up the hbs as a view engine to display the output on server side
+app.set("view engine", ".hbs");
 
 // middleware for bodyparser
 app.use(bodyParser.urlencoded({ extended: false }));

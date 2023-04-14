@@ -1,0 +1,80 @@
+
+
+{{!-- {{#if equals pageCount 0}} style="background-color: red;"
+{{/if}} --}}
+
+
+{{#each data}}
+<table class="full-table" border=1 width=95% align=center
+    style="border-collapse: collapse; margin-bottom: 30px; font-size:large; font-family: georgia; background:lightgray;">
+
+    <tr>
+        <th style="padding: 20px; width: 10%;"> Record </th>
+        <td style="padding: 20px; text-align: center">
+            {{ this.recrd }}
+        </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">vesslterms</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.vesslterms }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">feature_type</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.feature_type }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">chart</th>
+        <td style="text-align: center; padding: 20px;">
+            {{  this.chart }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">londec</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.londec }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">latdec</th>
+        <td style="text-align: center; padding: 20px;">
+            <img src=" {{ this.latdec }} ">
+        </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">gp_quality</th>
+        <td style="text-align: justify; padding: 20px;">
+            {{ this.gp_quality }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">depth</th>
+        <td style="text-align: center; padding: 20px">
+            {{ this.depth }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">sounding_type</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.sounding_type }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">history</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.history }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">quasou</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.quasou }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">watlev</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.watlev }} </td>
+    </tr>
+    <tr>
+        <th style="padding: 20px; width: 10%;">coordinates</th>
+        <td style="text-align: center; padding: 20px;">
+            {{ this.coordinates }} </td>
+    </tr>
+
+</table>
+    {{/each}}

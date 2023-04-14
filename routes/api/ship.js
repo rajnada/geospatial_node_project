@@ -32,21 +32,27 @@ router.get("/get", async (req, res) => {
   }
 });
 
-app.post("/record", async (req, res) => {
+router.post("/record", async (req, res) => {
   const page = req.body.page;
   const perpage = req.body.perpage;
   const depth = req.body.depth;
+  console.log("depth =>", depth);
   const query = depth ? { depth } : {};
 
+  console.log("query =>", query);
+  console.log("page =>", page);
+  console.log("perPage =>", perpage);
+
   try {
-    const sales = await Ship.find(query)
-      // .sort({ saleDate: -1 })
-      .skip((page - 1) * per_page)
-      .limit(per_page)
+    const ship = await Ship.find(query)
+      .skip((page - 1) * perpage)
+      .limit(perpage)
       .lean()
       .exec();
 
-    res.render("sales", { title: "Filtered Data", data: sales });
+    console.log("ship =>", ship);
+
+    res.render("singleShipWreck", { title: "Filtered Data", data: ship });
   } catch (error) {
     res.status(500).send(error.message);
   }
