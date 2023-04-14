@@ -6,11 +6,12 @@ const key = process.env.SECRET_KEY;
 
 var opts = {};
 
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(); //tells the strategy to extract the JWT
+//  from the Authorization header's Bearer token.
 
 opts.secretOrKey = key;
 
-const temp_db = {
+const user_db = {
   user: [
     {
       id: 1,
@@ -24,7 +25,7 @@ const temp_db = {
 module.exports = (passport) => {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {
-      const user = temp_db.user;
+      const user = user_db.user;
       if (user) {
         return done(null, user);
       } else {
@@ -33,3 +34,5 @@ module.exports = (passport) => {
     })
   );
 };
+
+// opts is used to how to extract jwt from the incoming req and verify it

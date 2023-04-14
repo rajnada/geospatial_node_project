@@ -9,8 +9,6 @@ const settings = require("../../config/settings");
 
 // Import Ship schema
 const Ship = require("./../../models/Ship");
-const { log } = require("console");
-const { exec } = require("child_process");
 
 //@type     -   GET
 //@route    -   /api/ship
@@ -23,40 +21,31 @@ router.get("/", (req, res) => res.send("Ship related routes"));
 //@desc     -   Get all people record
 //@access   -   PUBLIC
 router.get("/get", async (req, res) => {
-  // without cursor.
   try {
-    await Ship.find({})
-      // .lean()
-      // .skip(page)
-      // .limit(perPage)
-      .then((ship) => {
-        // console.log("ship =>", ship);
-        res.send(ship);
-      });
+    await Ship.find({}).then((ship) => {
+      res.send(ship);
+    });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
+//@type     -   POST
+//@route    -   /api/ship/record
+//@desc     -   post api to filtered data using the parameters
+//@access   -   PUBLIC
 router.post("/record", async (req, res) => {
   const page = req.body.page;
   const perpage = req.body.perpage;
   const depth = req.body.depth;
-  console.log("depth =>", depth);
   const query = depth ? { depth } : {};
-
-  console.log("query =>", query);
-  console.log("page =>", page);
-  console.log("perPage =>", perpage);
 
   try {
     const ship = await Ship.find(query)
       .skip((page - 1) * perpage)
       .limit(perpage)
-      .lean()
+      .lean() //returns plain js object
       .exec();
-
-    console.log("ship =>", ship);
 
     res.render("singleShipWreck", { title: "Filtered Data", data: ship });
   } catch (error) {
@@ -82,6 +71,10 @@ router.get(
 );
 
 // create a new document. URL : /api/ship/add
+//@type     -   POST
+//@route    -   /api/ship/add
+//@desc     -   add a new record
+//@access   -   PUBLIC
 router.post("/add", (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
@@ -101,12 +94,6 @@ router.post("/add", (req, res) => {
     coordinates: req.body.coordinates,
   });
 
-  // const shipData = Ship({
-  //   recrd: "qaz",
-  //   vesslterms: "qwe",
-  //   feature_type: "Wrecks - Visible",
-  // });
-
   // add new document to the collection.
   shipData
     .save()
@@ -119,9 +106,6 @@ router.post("/add", (req, res) => {
       res.send(err.message);
     });
 });
-// })
-// .catch((err) => res.send(err));
-// });
 
 //@type     -   PUT
 //@route    -   /api/ship/put/:id
@@ -158,7 +142,7 @@ router.put("/put/:_id", (req, res) => {
 });
 
 //@type     -   DELETE
-//@route    -   /api/ship/put/:id
+//@route    -   /api/ship/delete/:id
 //@desc     -   Delete a record on the basis of id
 //@access   -   PUBLIC
 router.delete("/delete/:_id", (req, res) => {
@@ -174,7 +158,7 @@ router.delete("/delete/:_id", (req, res) => {
 });
 
 // Create temp database
-const temp_db = {
+const auth_db = {
   user: [
     {
       id: 1,
@@ -190,7 +174,7 @@ router.post("/login", (req, res) => {
   username = req.body.username;
   password = req.body.password; // 123456
 
-  const user = temp_db.user.find((user) => user.username === username);
+  const user = auth_db.user.find((user) => user.username === username);
 
   console.log(user);
 
@@ -201,9 +185,6 @@ router.post("/login", (req, res) => {
       .compare(password, user.password)
       .then((isCompared) => {
         if (isCompared) {
-          // res.cookie('session_id', '123')
-          // res.send('Login Success')
-
           // generate JWT
           const payload = {
             id: user.id,
